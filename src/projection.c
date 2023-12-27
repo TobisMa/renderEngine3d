@@ -76,7 +76,26 @@ void drawLineSegment(struct vec3 p1, struct vec3 p2, struct camera *cam) {
         return;
     }
     else {
-        printf("Later on\n");
+        struct vec3 front, back;
+        if (p1.z >= CLIP_DEPTH) {
+            front = p1;
+            back = p2;
+        }
+        else {
+            front = p2;
+            back = p1;
+        }
+
+        float size = front.z - back.z;
+        float percentage = front.z / size;
+        float clipPos = front.x + (back.x - front.x) * percentage;
+        back.x = clipPos;
+        back.y = back.y;
+        back.z = CLIP_DEPTH;
+
+        pixel1 = screenCoordinate(front, cam);
+        pixel2 = screenCoordinate(back, cam);
+
     } 
     DrawLine(pixel1.x, pixel1.y, pixel2.x, pixel2.y, OUTLINE_COLOR);
 }

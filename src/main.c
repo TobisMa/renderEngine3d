@@ -31,13 +31,11 @@ int main(int argc, char const *argv[])
         .rotation={0, 0, 0}
     };
 
-    struct vec3 point = {30, 1, 100};
-
     struct mesh m = {
-        .triangleCount = 2
+        .triangleCount = 4
     };
     
-    m.triangles = malloc(sizeof(struct triangle) * 2);
+    m.triangles = malloc(sizeof(struct triangle) * m.triangleCount);
     struct vec3 points1[3] = {
         {.x = 10, .y=10, .z=10},
         {.x = 10, .y=20, .z=10},
@@ -48,17 +46,34 @@ int main(int argc, char const *argv[])
         {.x = 10, .y=20, .z=10},
         {.x = 20, .y=10, .z=10}
     };
+    struct vec3 points3[3] = {
+        {.x = 20, .y=20, .z=10},
+        {.x = 10, .y=20, .z=10},
+        {.x = 20, .y=20, .z=20}
+    };
+    struct vec3 points4[3] = {
+        {.x = 20, .y=20, .z=10},
+        {.x = 20, .y=10, .z=10},
+        {.x = 20, .y=20, .z=20}
+    };
+    // struct vec3 points5[3] = {
+    //     {.x = 20, .y=20, .z=10},
+    //     {.x = 20, .y=10, .z=10},
+    //     {.x = 20, .y=20, .z=20}
+    // };
     for (int i = 0; i < 3; i++) {
         m.triangles[0].points[i] = points1[i];
         m.triangles[1].points[i] = points2[i];
+        m.triangles[2].points[i] = points3[i];
+        m.triangles[3].points[i] = points4[i];
+        // m.triangles[4].points[i] = points5[i];
     }
 
     addMesh(&m);
 
     while (!WindowShouldClose()) {
         if (IsKeyDown(KEY_E)) {
-            struct pixel pos = screenCoordinate(transformPoint(&point, &cam), &cam);
-            printf("Screen coor of (%f | %f | %f) => (%i | %i)\n", point.x, point.y, point.z, pos.x, pos.y);
+            printf("Cam position (%f | %f | %f) and y rotation %f\n", cam.position.x, cam.position.y, cam.position.z, cam.rotation.y);
         }
 
         if (IsKeyDown(KEY_W)) {
@@ -78,10 +93,10 @@ int main(int argc, char const *argv[])
             cam.position.x += PLAYER_SPEED * cos(cam.rotation.y);
         }
         if (IsKeyDown(KEY_LEFT)) {
-            cam.rotation.y -= PI / 30;
+            cam.rotation.y += PI / 30;
         }
         if (IsKeyDown(KEY_RIGHT)) {
-            cam.rotation.y += PI / 30;
+            cam.rotation.y -= PI / 30;
         }
         while (cam.rotation.y < 0) {
             cam.rotation.y += 2 * PI;
